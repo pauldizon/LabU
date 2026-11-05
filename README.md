@@ -1,2 +1,2 @@
-# LabMate
+# LabU
 Finals for Dastal
