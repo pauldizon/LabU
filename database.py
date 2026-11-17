@@ -1,14 +1,24 @@
 
 import sqlite3
 import sys
+import os
 from pathlib import Path
 
+import shutil
+
 if getattr(sys, "frozen", False):
-    APP_DIR = Path(sys.executable).resolve().parent
+    APP_DIR = Path(os.environ["LOCALAPPDATA"]) / "LabU"
+    APP_DIR.mkdir(parents=True, exist_ok=True)
+
+    DATABASE_PATH = APP_DIR / "labu.db"
+    BUNDLED_DATABASE = Path(sys._MEIPASS) / "labu.db"
+
+    if not DATABASE_PATH.exists() and BUNDLED_DATABASE.exists():
+        shutil.copy2(BUNDLED_DATABASE, DATABASE_PATH)
+
 else:
     APP_DIR = Path(__file__).resolve().parent
-
-DATABASE_PATH = APP_DIR / "labu.db"
+    DATABASE_PATH = APP_DIR / "labu.db"
 
 def get_connection():
     """Create a connection to the SQLite database."""

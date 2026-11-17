@@ -9,6 +9,7 @@ from queue_view import QueueView
 from search_sort_view import SearchSortView
 from transaction_view import TransactionView
 from dashboard_view import DashboardView
+import database
 
 
 class LabUApplication:
@@ -182,6 +183,7 @@ class LabUApplication:
 if __name__ == "__main__":
 
     print("Starting LabU...")
+    database.initialize_database()
 
     root = tk.Tk()
     root.title("LabU | Component Laboratory")

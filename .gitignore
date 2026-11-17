@@ -21,3 +21,16 @@ labu_backup.db
 # Operating system
 .DS_Store
 Thumbs.db
+# PyInstaller build and release outputs
+build_release/
+build_release2/
+build_final/
+release_dist/
+release_dist2/
+final_release/
+
+# Distribution packages
+LabU-Windows-*.zip
+
+# Original icon artwork
+Fallout-Icon-*.png

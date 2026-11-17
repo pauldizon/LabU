@@ -1,0 +1,71 @@
+"""Seed LabU with demonstration electronics inventory.
+
+Run from the LabU project folder:
+    python seed_inventory.py
+
+This script uses INSERT OR IGNORE, so it is safe to run more than once.
+Existing component records are not overwritten. Review quantities and
+locations against physical stock before treating this as a real inventory.
+"""
+import database
+
+SAMPLE_COMPONENTS = [
+    ('INV-RES-001', '220Ω Resistor, ¼W', 'Resistor', 20, 'Drawer A1'),
+    ('INV-RES-002', '1kΩ Resistor, ¼W', 'Resistor', 20, 'Drawer A1'),
+    ('INV-RES-003', '10kΩ Resistor, ¼W', 'Resistor', 20, 'Drawer A1'),
+    ('INV-RES-004', '100Ω Resistor, ¼W', 'Resistor', 15, 'Drawer A1'),
+    ('INV-RES-005', '4.7kΩ Resistor, ¼W', 'Resistor', 15, 'Drawer A1'),
+    ('INV-CAP-001', '100µF 25V Electrolytic Capacitor', 'Capacitor', 10, 'Drawer A2'),
+    ('INV-CAP-002', '470µF 25V Electrolytic Capacitor', 'Capacitor', 10, 'Drawer A2'),
+    ('INV-CAP-003', '1000µF 25V Electrolytic Capacitor', 'Capacitor', 5, 'Drawer A2'),
+    ('INV-CAP-004', '100nF Ceramic Capacitor', 'Capacitor', 20, 'Drawer A2'),
+    ('INV-CAP-005', '10µF 25V Electrolytic Capacitor', 'Capacitor', 10, 'Drawer A2'),
+    ('INV-DIO-001', '1N4007 Rectifier Diode', 'Diode', 10, 'Drawer B1'),
+    ('INV-DIO-002', '1N4148 Switching Diode', 'Diode', 10, 'Drawer B1'),
+    ('INV-DIO-003', '1N5819 Schottky Diode', 'Diode', 5, 'Drawer B1'),
+    ('INV-LED-001', '5mm Red LED', 'LED', 10, 'Drawer B2'),
+    ('INV-LED-002', '5mm Green LED', 'LED', 10, 'Drawer B2'),
+    ('INV-TRN-001', 'BC547 NPN Transistor', 'Transistor', 10, 'Drawer C1'),
+    ('INV-TRN-002', '2N2222 NPN Transistor', 'Transistor', 10, 'Drawer C1'),
+    ('INV-TRN-003', 'BC557 PNP Transistor', 'Transistor', 5, 'Drawer C1'),
+    ('INV-IC-001', 'NE555 Timer IC', 'Integrated Circuit', 5, 'Drawer C2'),
+    ('INV-IC-002', 'LM358 Dual Op-Amp', 'Integrated Circuit', 5, 'Drawer C2'),
+    ('INV-POT-001', '10kΩ Linear Potentiometer', 'Potentiometer', 5, 'Drawer D1'),
+    ('INV-SW-001', '6×6mm Tactile Push Button', 'Switch', 10, 'Drawer D1'),
+    ('INV-SW-002', 'SPDT Slide Switch', 'Switch', 5, 'Drawer D1'),
+    ('INV-BRD-001', '830-Point Solderless Breadboard', 'Prototyping', 5, 'Shelf E1'),
+    ('INV-WIR-001', 'Male-to-Male Jumper Wires', 'Wiring', 5, 'Shelf E1'),
+    ('INV-WIR-002', 'Male-to-Female Jumper Wires', 'Wiring', 5, 'Shelf E1'),
+    ('INV-CON-001', '2-Pin Screw Terminal Block', 'Connector', 10, 'Drawer D2'),
+    ('INV-CON-002', '40-Pin Female Header', 'Connector', 5, 'Drawer D2'),
+    ('INV-CON-003', '40-Pin Male Header', 'Connector', 5, 'Drawer D2'),
+    ('INV-RES-006', '330Ω Resistor, ¼W', 'Resistor', 15, 'Drawer A1'),
+]
+
+def seed_inventory():
+    database.initialize_database()
+    connection = database.get_connection()
+    try:
+        cursor = connection.executemany(
+            """
+            INSERT OR IGNORE INTO components
+                (component_id, name, category, quantity, location)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            SAMPLE_COMPONENTS,
+        )
+        connection.commit()
+        print(f"Inventory rows processed: {len(SAMPLE_COMPONENTS)}")
+        print(f"New components inserted: {cursor.rowcount}")
+        print("Existing component IDs, if any, were left unchanged.")
+    finally:
+        connection.close()
+
+    with database.get_connection() as connection:
+        total = connection.execute(
+            "SELECT COUNT(*) FROM components"
+        ).fetchone()[0]
+        print(f"Total components now in database: {total}")
+
+if __name__ == "__main__":
+    seed_inventory()

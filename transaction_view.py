@@ -220,3 +220,4 @@ class TransactionView(ttk.Frame):
 
         self.search_var.set("")
         self.load_transactions()
+    
