@@ -1,0 +1,23 @@
+# Python environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Database backups
+labu_backup.db
+*.db-journal
+
+# IDE settings
+.vscode/
+
+# Operating system
+.DS_Store
+Thumbs.db
